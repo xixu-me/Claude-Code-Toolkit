@@ -39,19 +39,23 @@ safe_read() {
   fi
   
   # Use /dev/tty to read from terminal even when script is piped
+  local value
   if [ -t 0 ]; then
     if [ "$options" = "-s" ]; then
-      read -s "$var_name"
+      read -s value
     else
-      read -r "$var_name"
+      read -r value
     fi
   else
     if [ "$options" = "-s" ]; then
-      read -s "$var_name" < /dev/tty
+      read -s value < /dev/tty
     else
-      read -r "$var_name" < /dev/tty
+      read -r value < /dev/tty
     fi
   fi
+  
+  # Use eval to assign the value to the variable
+  eval "$var_name=\"\$value\""
 }
 
 # Create Claude directory if it doesn't exist
