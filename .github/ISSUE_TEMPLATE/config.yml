@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or Discussion
+    url: https://github.com/xixu-me/Claude-Code-Toolkit/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: Security Vulnerability
+    url: https://github.com/xixu-me/Claude-Code-Toolkit/security/advisories/new
+    about: Report security vulnerabilities privately
