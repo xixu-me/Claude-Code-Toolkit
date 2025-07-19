@@ -503,7 +503,8 @@ cmd_install() {
     echo ""
     
     while true; do
-      read -p "Enter your choice (1-3): " choice
+      echo -n "Enter your choice (1-3): "
+      read choice
       case $choice in
         1|2|3) break ;;
         *) echo "Please enter 1, 2, or 3." ;;

@@ -51,7 +51,7 @@ curl -L https://github.com/xixu-me/Claude-Code-Toolkit/raw/main/cct.sh | bash -s
 curl -L https://github.com/xixu-me/Claude-Code-Toolkit/raw/main/cct.sh | bash -s install "Moonshot AI" YOUR_MOONSHOT_API_KEY
 
 # Windows (PowerShell)
-Invoke-WebRequest -Uri "https://github.com/xixu-me/Claude-Code-Toolkit/raw/main/cct.ps1" -OutFile "cct.ps1"; .\cct.ps1 install "Moonshot AI" YOUR_MOONSHOT_API_KEY
+Invoke-WebRequest -Uri "https://github.com/xixu-me/Claude-Code-Toolkit/raw/main/cct.ps1" -OutFile "cct.ps1"; .\cct.ps1 install
 
 # Windows - Get started with Kimi model
 Invoke-WebRequest -Uri "https://github.com/xixu-me/Claude-Code-Toolkit/raw/main/cct.ps1" -OutFile "cct.ps1"; .\cct.ps1 install "Moonshot AI" YOUR_MOONSHOT_API_KEY
