@@ -1,5 +1,7 @@
 # Claude Code Toolkit (CCT)
 
+***[汉语](README.zh.md)***
+
 [![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat&logo=linux&logoColor=black)](#quick-start)
 [![macOS](https://img.shields.io/badge/macOS-000000?style=flat&logo=apple&logoColor=white)](#quick-start)
 [![Windows](https://img.shields.io/badge/Windows-0078D6?style=flat&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4OCA4OCIgd2lkdGg9Ijg4IiBoZWlnaHQ9Ijg4Ij48cmVjdCB3aWR0aD0iNDIiIGhlaWdodD0iNDIiIGZpbGw9IiMwMGFkZWYiLz48cmVjdCB4PSI0NiIgd2lkdGg9IjQyIiBoZWlnaHQ9IjQyIiBmaWxsPSIjMDBhZGVmIi8+PHJlY3QgeT0iNDYiIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgZmlsbD0iIzAwYWRlZiIvPjxyZWN0IHg9IjQ2IiB5PSI0NiIgd2lkdGg9IjQyIiBoZWlnaHQ9IjQyIiBmaWxsPSIjMDBhZGVmIi8+PC9zdmc+&logoColor=white)](#quick-start)
