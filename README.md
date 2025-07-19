@@ -5,12 +5,20 @@
 [![Windows](https://img.shields.io/badge/Windows-0078D6?style=flat&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4OCA4OCIgd2lkdGg9Ijg4IiBoZWlnaHQ9Ijg4Ij48cmVjdCB3aWR0aD0iNDIiIGhlaWdodD0iNDIiIGZpbGw9IiMwMGFkZWYiLz48cmVjdCB4PSI0NiIgd2lkdGg9IjQyIiBoZWlnaHQ9IjQyIiBmaWxsPSIjMDBhZGVmIi8+PHJlY3QgeT0iNDYiIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiIgZmlsbD0iIzAwYWRlZiIvPjxyZWN0IHg9IjQ2IiB5PSI0NiIgd2lkdGg9IjQyIiBoZWlnaHQ9IjQyIiBmaWxsPSIjMDBhZGVmIi8+PC9zdmc+&logoColor=white)](#windows-powershell)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A comprehensive cross-platform toolkit for managing Claude Code installation, configuration, and multiple Anthropic-compatible API provider support. This toolkit simplifies the process of setting up and switching between different Anthropic-compatible API providers, including the official Anthropic API and compatible third-party services that implement Anthropic's API specification.
+A comprehensive cross-platform toolkit for managing Claude Code installation, configuration, and multiple Anthropic-compatible API provider support. This toolkit simplifies the process of setting up and switching between different Anthropic-compatible API providers, including the official Anthropic API and compatible third-party services like **Moonshot AI with the latest Kimi model (`kimi-k2-0711-preview`)** that implement Anthropic's API specification.
+
+## ✨ Latest Kimi Model Support
+
+🚀 **Featured**: This toolkit includes built-in support for **Moonshot AI's latest Kimi model (`kimi-k2-0711-preview`)**, allowing you to leverage cutting-edge AI capabilities through the familiar Claude Code interface.
+
+- **One-command setup**: Instantly configure Moonshot AI with the latest Kimi model
+- **Seamless switching**: Switch between official Anthropic API and Kimi model effortlessly
+- **Full compatibility**: All Claude Code features work seamlessly with the Kimi model
 
 ## Features
 
 - **Cross-Platform Support**: Works on Linux/macOS (Bash) and Windows (PowerShell)
-- **Multiple Provider Support**: Easy switching between Anthropic, Moonshot AI (Anthropic-compatible), and custom Athropic-compatible API providers
+- **Multiple Provider Support**: Easy switching between Anthropic, Moonshot AI (with latest Kimi models), and custom Anthropic-compatible API providers
 - **Automated Installation**: Handles Node.js, npm, and Claude Code package installation
 - **Configuration Management**: Persistent provider configurations with secure API key storage
 - **Environment Variable Management**: Automatic shell configuration for seamless provider switching
@@ -71,6 +79,18 @@ After installation, verify everything is working correctly:
 | `switch` | Switch to a different configured provider |
 | `list-providers` | Display all available providers |
 
+### Quick Start with Latest Kimi Model
+
+Experience the latest AI capabilities in just one command:
+
+```bash
+# Linux/macOS - Get started with Kimi model
+curl -L https://github.com/xixu-me/Claude-Code-Toolkit/raw/main/cct.sh | bash -s install "Moonshot AI" YOUR_MOONSHOT_API_KEY
+
+# Windows - Get started with Kimi model
+Invoke-WebRequest -Uri "https://github.com/xixu-me/Claude-Code-Toolkit/raw/main/cct.ps1" -OutFile "cct.ps1"; .\cct.ps1 install "Moonshot AI" YOUR_MOONSHOT_API_KEY
+```
+
 ### Command Examples
 
 #### Install with Anthropic (Official API)
@@ -83,7 +103,7 @@ After installation, verify everything is working correctly:
 .\cct.ps1 install Anthropic YOUR_API_KEY
 ```
 
-#### Install with Moonshot AI (Default Configuration)
+#### Install with Moonshot AI (Latest Kimi Model Support)
 
 ```bash
 # Linux/macOS
@@ -155,8 +175,9 @@ After installation, verify everything is working correctly:
    - Requires official Anthropic API key
    - No additional configuration needed
 
-2. **Moonshot AI** - Anthropic-compatible API service
+2. **Moonshot AI** - Anthropic-compatible API service with latest Kimi models
    - Pre-configured with Moonshot endpoints
+   - **Supports the latest Kimi model (`kimi-k2-0711-preview`)**
    - Fully compatible with Anthropic API format
    - Requires Moonshot AI API key
 
@@ -238,7 +259,7 @@ If you encounter issues:
 
 ## Inspiration and Attribution
 
-This project was inspired by the [LLM-Red-Team/kimi-cc](https://github.com/LLM-Red-Team/kimi-cc) repository, which provides a simple way to use Moonshot AI's latest Kimi model (`kimi-k2-0711-preview`) to drive Claude Code. We've expanded upon that concept to create a comprehensive cross-platform toolkit that supports multiple Anthropic-compatible API providers with advanced configuration management, provider switching capabilities, and robust installation processes.
+This project was inspired by the [LLM-Red-Team/kimi-cc](https://github.com/LLM-Red-Team/kimi-cc) repository, which provides a simple way to use Moonshot AI's **latest Kimi model (`kimi-k2-0711-preview`)** to drive Claude Code. We've expanded upon that concept to create a comprehensive cross-platform toolkit that supports multiple Anthropic-compatible API providers with advanced configuration management, provider switching capabilities, and robust installation processes.
 
 Key enhancements over the original inspiration include:
 
