@@ -182,7 +182,7 @@ You can add any API provider that implements Anthropic-compatible endpoints by s
 
 ### File Locations
 
-- **Configuration Directory**: `~/.claude/` (Unix) or `%USERPROFILE%\.claude\` (Windows)
+- **Configuration Directory**: `~/.claude/` (Linux/macOS) or `%USERPROFILE%\.claude\` (Windows)
 - **Providers File**: `~/.claude/providers.json`
 - **Claude Config**: `~/.claude.json`
 
