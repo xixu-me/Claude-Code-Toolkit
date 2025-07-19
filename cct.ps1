@@ -390,7 +390,25 @@ function Cmd-Install {
         Write-Host ""
         
         do {
-            $choice = Read-Host "Enter your choice (1-3)"
+            try {
+                $choice = Read-Host "Enter your choice (1-3)"
+                
+                # Check if we got input
+                if ([string]::IsNullOrEmpty($choice)) {
+                    Write-Host ""
+                    Write-Host "Input error or EOF detected. Please try again."
+                    continue
+                }
+            }
+            catch {
+                Write-Host ""
+                Write-Host "Input error or EOF detected. Please try again."
+                continue
+            }
+            
+            if ($choice -notin @("1", "2", "3")) {
+                Write-Host "Please enter 1, 2, or 3."
+            }
         } while ($choice -notin @("1", "2", "3"))
         
         switch ($choice) {
@@ -434,6 +452,10 @@ function Cmd-Install {
     # Prompt for missing configuration details
     if ([string]::IsNullOrEmpty($baseUrl)) {
         $baseUrl = Read-Host "Enter base URL for $providerName"
+        if ([string]::IsNullOrEmpty($baseUrl)) {
+            Write-Error "Base URL cannot be empty. Please try again."
+            exit 1
+        }
     }
     
     if ([string]::IsNullOrEmpty($apiKey)) {
@@ -558,10 +580,18 @@ function Cmd-AddProvider {
     
     if ([string]::IsNullOrEmpty($providerName)) {
         $providerName = Read-Host "Enter provider name"
+        if ([string]::IsNullOrEmpty($providerName)) {
+            Write-Error "Provider name cannot be empty. Please try again."
+            exit 1
+        }
     }
     
     if ([string]::IsNullOrEmpty($baseUrl)) {
         $baseUrl = Read-Host "Enter base URL for $providerName"
+        if ([string]::IsNullOrEmpty($baseUrl)) {
+            Write-Error "Base URL cannot be empty. Please try again."
+            exit 1
+        }
     }
     
     if ([string]::IsNullOrEmpty($apiKey)) {
@@ -594,6 +624,10 @@ function Cmd-Switch {
     
     if ([string]::IsNullOrEmpty($providerName)) {
         $providerName = Read-Host "Enter provider name to switch to"
+        if ([string]::IsNullOrEmpty($providerName)) {
+            Write-Error "Provider name cannot be empty. Please try again."
+            exit 1
+        }
     }
     
     $provider = Get-ProviderDetails -providerName $providerName

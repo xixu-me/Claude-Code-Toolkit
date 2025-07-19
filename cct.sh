@@ -504,7 +504,15 @@ cmd_install() {
     
     while true; do
       echo -n "Enter your choice (1-3): "
-      read choice
+      read -r choice
+      
+      # Check if read command succeeded and we got input
+      if [ $? -ne 0 ] || [ -z "$choice" ]; then
+        echo ""
+        echo "Input error or EOF detected. Please try again."
+        continue
+      fi
+      
       case $choice in
         1|2|3) break ;;
         *) echo "Please enter 1, 2, or 3." ;;
@@ -578,6 +586,10 @@ cmd_install() {
   # Prompt for missing configuration details
   if [ -z "$base_url" ]; then
     read -p "Enter base URL for $provider_name: " base_url
+    if [ -z "$base_url" ]; then
+      color_error "Base URL cannot be empty. Please try again."
+      exit 1
+    fi
   fi
   
   if [ -z "$api_key" ]; then
@@ -715,10 +727,18 @@ cmd_add_provider() {
   
   if [ -z "$provider_name" ]; then
     read -p "Enter provider name: " provider_name
+    if [ -z "$provider_name" ]; then
+      color_error "Provider name cannot be empty. Please try again."
+      exit 1
+    fi
   fi
   
   if [ -z "$base_url" ]; then
     read -p "Enter base URL for $provider_name: " base_url
+    if [ -z "$base_url" ]; then
+      color_error "Base URL cannot be empty. Please try again."
+      exit 1
+    fi
   fi
   
   if [ -z "$api_key" ]; then
@@ -752,6 +772,10 @@ cmd_switch() {
   
   if [ -z "$provider_name" ]; then
     read -p "Enter provider name to switch to: " provider_name
+    if [ -z "$provider_name" ]; then
+      color_error "Provider name cannot be empty. Please try again."
+      exit 1
+    fi
   fi
   
   local provider_details=$(get_provider_details "$provider_name")
