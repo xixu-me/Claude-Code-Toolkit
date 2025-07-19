@@ -248,7 +248,7 @@ If you encounter issues:
 
 ## Inspiration and Attribution
 
-This project was inspired by the [LLM-Red-Team/kimi-cc](https://github.com/LLM-Red-Team/kimi-cc) repository, which provides a simple way to use Moonshot AI's **latest Kimi model (`kimi-k2-0711-preview`)** to drive Claude Code. We've expanded upon that concept to create a comprehensive cross-platform toolkit that supports multiple Anthropic-compatible API providers with advanced configuration management, provider switching capabilities, and robust installation processes.
+This repository was inspired by the [LLM-Red-Team/kimi-cc](https://github.com/LLM-Red-Team/kimi-cc) repository, which provides a simple way to use Moonshot AI's **latest Kimi model (`kimi-k2-0711-preview`)** to drive Claude Code. We've expanded upon that concept to create a comprehensive cross-platform toolkit that supports multiple Anthropic-compatible API providers with advanced configuration management, provider switching capabilities, and robust installation processes.
 
 Key enhancements over the original inspiration include:
 
