@@ -73,33 +73,60 @@ detect_shell_config_file() {
     *zsh*)
       if [ -f "$HOME/.zshrc" ]; then
         echo "$HOME/.zshrc"
-        return
+        return 0
       fi
       ;;
     *bash*)
+      # Check for .bashrc first, then .bash_profile
       if [ -f "$HOME/.bashrc" ]; then
         echo "$HOME/.bashrc"
-        return
+        return 0
+      elif [ -f "$HOME/.bash_profile" ]; then
+        echo "$HOME/.bash_profile"
+        return 0
       fi
       ;;
     *fish*)
-      if [ -f "$HOME/.config/fish/config.fish" ]; then
-        echo "$HOME/.config/fish/config.fish"
-        return
+      # Ensure fish config directory exists
+      local fish_config="$HOME/.config/fish/config.fish"
+      if [ -f "$fish_config" ]; then
+        echo "$fish_config"
+        return 0
+      elif [ -d "$HOME/.config/fish" ]; then
+        # Directory exists but config file doesn't - create it
+        if touch "$fish_config" 2>/dev/null; then
+          echo "$fish_config"
+          return 0
+        fi
       fi
       ;;
   esac
   
-  # Fallback order: .profile is most compatible across shells
-  if [ -f "$HOME/.profile" ]; then
-    echo "$HOME/.profile"
+  # Fallback order: check common shell configuration files
+  local config_files=(
+    "$HOME/.profile"
+    "$HOME/.bashrc"
+    "$HOME/.zshrc"
+    "$HOME/.bash_profile"
+  )
+  
+  for config_file in "${config_files[@]}"; do
+    if [ -f "$config_file" ]; then
+      echo "$config_file"
+      return 0
+    fi
+  done
+  
+  # Last resort: create .profile if no configuration file exists
+  local profile_file="$HOME/.profile"
+  if touch "$profile_file" 2>/dev/null; then
+    echo "$profile_file"
+    return 0
   else
-    # Create .profile if no configuration file exists
-    touch "$HOME/.profile" || {
-      color_error "Cannot create ~/.profile file"
-      exit 1
-    }
-    echo "$HOME/.profile"
+    # If we can't create files in home directory, something is seriously wrong
+    color_error "Cannot create or access shell configuration files in home directory: $HOME"
+    color_error "Please check permissions and try again."
+    return 1
   fi
 }
 
@@ -372,46 +399,86 @@ update_env_vars() {
 # Remove Claude Code environment variables from shell configuration
 remove_env_vars() {
   local config_file=$(detect_shell_config_file)
+  local removal_success=true
+  
+  # Check if config file exists
+  if [ ! -f "$config_file" ]; then
+    color_info "Shell configuration file $config_file does not exist."
+    return 0
+  fi
   
   # Handle Fish shell with different syntax
   if [[ "$config_file" == *"config.fish"* ]]; then
     # Fish shell uses 'set -gx' for environment variables
-    sed -i'.bak' '/^set -gx ANTHROPIC_BASE_URL/d' "$config_file"
-    sed -i'.bak' '/^set -gx ANTHROPIC_API_KEY/d' "$config_file"
+    if sed -i'.bak' '/^set -gx ANTHROPIC_BASE_URL/d; /^set -gx ANTHROPIC_API_KEY/d' "$config_file" 2>/dev/null; then
+      color_success "Environment variables removed from Fish shell configuration."
+    else
+      color_error "Failed to remove environment variables from Fish shell configuration."
+      removal_success=false
+    fi
   else
     # Bash/Zsh and other shells use 'export' syntax
-    sed -i'.bak' '/^export ANTHROPIC_BASE_URL=/d' "$config_file"
-    sed -i'.bak' '/^export ANTHROPIC_API_KEY=/d' "$config_file"
+    if sed -i'.bak' '/^export ANTHROPIC_BASE_URL=/d; /^export ANTHROPIC_API_KEY=/d' "$config_file" 2>/dev/null; then
+      color_success "Environment variables removed from shell configuration."
+    else
+      color_error "Failed to remove environment variables from shell configuration."
+      removal_success=false
+    fi
   fi
   
   # Clean up backup file created by sed
-  rm -f "${config_file}.bak"
+  rm -f "${config_file}.bak" 2>/dev/null
   
-  color_success "Environment variables removed from $config_file."
-  color_info "Please run 'source $config_file' or restart your terminal for changes to take effect."
+  if [ "$removal_success" = true ]; then
+    color_info "Please run 'source $config_file' or restart your terminal for changes to take effect."
+    return 0
+  else
+    color_warning "You may need to manually remove ANTHROPIC_BASE_URL and ANTHROPIC_API_KEY from $config_file"
+    return 1
+  fi
 }
 
 # Check if Claude Code package is installed
 check_claude_code() {
   # First attempt: Check if claude command is available in PATH
-  if command -v claude &> /dev/null; then
-    color_success "$CLAUDE_PACKAGE is installed and available in PATH."
+  if command -v claude >/dev/null 2>&1; then
+    if [ "$1" != "silent" ]; then
+      color_success "$CLAUDE_PACKAGE is installed and available in PATH."
+    fi
     return 0
   fi
   
   # Second attempt: Check npm global packages with robust method
   if npm ls -g --depth=0 --parseable 2>/dev/null | grep -q "$CLAUDE_PACKAGE"; then
-    color_success "$CLAUDE_PACKAGE is installed globally."
+    if [ "$1" != "silent" ]; then
+      color_success "$CLAUDE_PACKAGE is installed globally."
+    fi
     return 0
   fi
   
-  # Final attempt: Use original npm list method
-  if npm list -g "$CLAUDE_PACKAGE" &>/dev/null; then
-    color_success "$CLAUDE_PACKAGE is installed."
+  # Third attempt: Use npm list method (slower but more thorough)
+  if npm list -g "$CLAUDE_PACKAGE" >/dev/null 2>&1; then
+    if [ "$1" != "silent" ]; then
+      color_success "$CLAUDE_PACKAGE is installed."
+    fi
     return 0
   fi
   
-  color_error "$CLAUDE_PACKAGE is not installed."
+  # Fourth attempt: Check npm prefix and look for the package manually
+  local npm_prefix
+  if npm_prefix=$(npm prefix -g 2>/dev/null); then
+    local package_path="$npm_prefix/node_modules/$CLAUDE_PACKAGE"
+    if [ -d "$package_path" ]; then
+      if [ "$1" != "silent" ]; then
+        color_success "$CLAUDE_PACKAGE is installed at $package_path."
+      fi
+      return 0
+    fi
+  fi
+  
+  if [ "$1" != "silent" ]; then
+    color_error "$CLAUDE_PACKAGE is not installed."
+  fi
   return 1
 }
 
@@ -635,29 +702,97 @@ cmd_install() {
 
 # Uninstall command - remove Claude Code and all configurations
 cmd_uninstall() {
+  local uninstall_success=true
+  local errors_occurred=false
+  
   # Remove Claude Code package if installed
-  if check_claude_code; then
+  if check_claude_code >/dev/null 2>&1; then
     color_progress "Uninstalling $CLAUDE_PACKAGE..."
-    npm uninstall -g "$CLAUDE_PACKAGE"
+    if npm uninstall -g "$CLAUDE_PACKAGE" >/dev/null 2>&1; then
+      color_success "Successfully uninstalled $CLAUDE_PACKAGE."
+    else
+      color_error "Failed to uninstall $CLAUDE_PACKAGE via npm."
+      errors_occurred=true
+      # Try alternative uninstall methods
+      color_progress "Attempting alternative uninstall method..."
+      if npm uninstall --global "$CLAUDE_PACKAGE" >/dev/null 2>&1; then
+        color_success "Successfully uninstalled $CLAUDE_PACKAGE using alternative method."
+      else
+        color_warning "Could not uninstall $CLAUDE_PACKAGE. You may need to remove it manually."
+        color_info "Try running: npm uninstall -g $CLAUDE_PACKAGE"
+      fi
+    fi
+  else
+    color_info "$CLAUDE_PACKAGE is not currently installed."
   fi
   
   # Remove environment variables from shell configuration
-  remove_env_vars
+  color_progress "Removing environment variables from shell configuration..."
+  if remove_env_vars >/dev/null 2>&1; then
+    color_success "Environment variables removed successfully."
+  else
+    color_warning "Could not remove all environment variables. Please check your shell configuration manually."
+    errors_occurred=true
+  fi
   
   # Remove Claude configuration directory
   if [ -d "$CLAUDE_DIR" ]; then
-    rm -rf "$CLAUDE_DIR"
-    color_success "Removed $CLAUDE_DIR directory."
+    color_progress "Removing Claude configuration directory..."
+    if rm -rf "$CLAUDE_DIR" 2>/dev/null; then
+      color_success "Removed $CLAUDE_DIR directory."
+    else
+      color_error "Failed to remove $CLAUDE_DIR directory. Permission denied or directory in use."
+      errors_occurred=true
+      # Try with sudo if available (for Linux/WSL)
+      if command -v sudo >/dev/null 2>&1; then
+        color_progress "Attempting to remove directory with elevated permissions..."
+        if sudo rm -rf "$CLAUDE_DIR" 2>/dev/null; then
+          color_success "Successfully removed $CLAUDE_DIR directory with elevated permissions."
+        else
+          color_warning "Could not remove $CLAUDE_DIR. Please remove it manually."
+        fi
+      else
+        color_warning "Could not remove $CLAUDE_DIR. Please remove it manually."
+      fi
+    fi
+  else
+    color_info "Claude configuration directory $CLAUDE_DIR does not exist."
   fi
   
   # Remove Claude configuration file
   claude_json_path="$HOME/.claude.json"
   if [ -f "$claude_json_path" ]; then
-    rm -f "$claude_json_path"
-    color_success "Removed $claude_json_path file."
+    color_progress "Removing Claude configuration file..."
+    if rm -f "$claude_json_path" 2>/dev/null; then
+      color_success "Removed $claude_json_path file."
+    else
+      color_error "Failed to remove $claude_json_path file. Permission denied."
+      errors_occurred=true
+      # Try with sudo if available (for Linux/WSL)
+      if command -v sudo >/dev/null 2>&1; then
+        color_progress "Attempting to remove file with elevated permissions..."
+        if sudo rm -f "$claude_json_path" 2>/dev/null; then
+          color_success "Successfully removed $claude_json_path file with elevated permissions."
+        else
+          color_warning "Could not remove $claude_json_path. Please remove it manually."
+        fi
+      else
+        color_warning "Could not remove $claude_json_path. Please remove it manually."
+      fi
+    fi
+  else
+    color_info "Claude configuration file $claude_json_path does not exist."
   fi
   
-  color_success "Claude Code has been uninstalled."
+  # Final status report
+  if [ "$errors_occurred" = false ]; then
+    color_success "Claude Code has been completely uninstalled."
+    color_info "Please restart your terminal or run 'source ~/.bashrc' (or your shell's config file) to complete the process."
+  else
+    color_warning "Claude Code uninstallation completed with some warnings."
+    color_info "Some files or configurations may need to be removed manually."
+    color_info "Please restart your terminal or run 'source ~/.bashrc' (or your shell's config file) to complete the process."
+  fi
 }
 
 # Update command - upgrade Claude Code to latest version
