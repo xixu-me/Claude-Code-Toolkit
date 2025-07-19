@@ -28,6 +28,32 @@ color_info() { echo -e "${BLUE}ℹ${NC} $1"; }
 color_progress() { echo -e "${CYAN}→${NC} $1"; }
 color_prompt() { echo -e "${WHITE}$1${NC}"; }
 
+# Safe read function that works even when script is piped
+safe_read() {
+  local var_name="$1"
+  local prompt="$2"
+  local options="$3"
+  
+  if [ -n "$prompt" ]; then
+    echo -n "$prompt"
+  fi
+  
+  # Use /dev/tty to read from terminal even when script is piped
+  if [ -t 0 ]; then
+    if [ "$options" = "-s" ]; then
+      read -s "$var_name"
+    else
+      read -r "$var_name"
+    fi
+  else
+    if [ "$options" = "-s" ]; then
+      read -s "$var_name" < /dev/tty
+    else
+      read -r "$var_name" < /dev/tty
+    fi
+  fi
+}
+
 # Create Claude directory if it doesn't exist
 ensure_claude_dir() {
   if [ ! -d "$CLAUDE_DIR" ]; then
@@ -440,7 +466,7 @@ list_providers() {
   # Verify Claude Code is installed before proceeding
   if ! check_claude_code; then
     echo "Claude Code is not installed. Would you like to install it now? (y/n)"
-    read -r response
+    safe_read response ""
     case "$response" in
       [Yy]*)
         cmd_install
@@ -503,12 +529,10 @@ cmd_install() {
     echo ""
     
     while true; do
-      echo -n "Enter your choice (1-3): "
-      read -r choice
+      safe_read choice "Enter your choice (1-3): "
       
-      # Check if read command succeeded and we got input
-      if [ $? -ne 0 ] || [ -z "$choice" ]; then
-        echo ""
+      # Check if we got valid input
+      if [ -z "$choice" ]; then
         echo "Input error or EOF detected. Please try again."
         continue
       fi
@@ -530,8 +554,8 @@ cmd_install() {
         base_url="$DEFAULT_BASE_URL"
         ;;
       3)
-        read -p "Enter provider name: " provider_name
-        read -p "Enter base URL for $provider_name: " base_url
+        safe_read provider_name "Enter provider name: "
+        safe_read base_url "Enter base URL for $provider_name: "
         ;;
     esac
   fi
@@ -539,8 +563,7 @@ cmd_install() {
   # Handle Anthropic provider (no additional configuration needed)
   if [ "$provider_name" = "Anthropic" ]; then
     if [ -z "$api_key" ]; then
-      echo -n "Enter your Anthropic API key: "
-      read -s api_key
+      safe_read api_key "Enter your Anthropic API key: " "-s"
       echo  # Add newline after hidden input
     fi
     
@@ -585,7 +608,7 @@ cmd_install() {
   
   # Prompt for missing configuration details
   if [ -z "$base_url" ]; then
-    read -p "Enter base URL for $provider_name: " base_url
+    safe_read base_url "Enter base URL for $provider_name: "
     if [ -z "$base_url" ]; then
       color_error "Base URL cannot be empty. Please try again."
       exit 1
@@ -593,8 +616,7 @@ cmd_install() {
   fi
   
   if [ -z "$api_key" ]; then
-    echo -n "Enter API key for $provider_name: "
-    read -s api_key
+    safe_read api_key "Enter API key for $provider_name: " "-s"
     echo  # Add newline after hidden input
   fi
   
@@ -639,7 +661,7 @@ cmd_update() {
   # Verify Claude Code is installed before attempting update
   if ! check_claude_code; then
     echo "Claude Code is not installed. Would you like to install it now? (y/n)"
-    read -r response
+    safe_read response ""
     case "$response" in
       [Yy]*)
         cmd_install
@@ -712,7 +734,7 @@ cmd_add_provider() {
   # Verify Claude Code is installed before proceeding
   if ! check_claude_code; then
     echo "Claude Code is not installed. Would you like to install it now? (y/n)"
-    read -r response
+    safe_read response ""
     case "$response" in
       [Yy]*)
         cmd_install
@@ -726,7 +748,7 @@ cmd_add_provider() {
   fi
   
   if [ -z "$provider_name" ]; then
-    read -p "Enter provider name: " provider_name
+    safe_read provider_name "Enter provider name: "
     if [ -z "$provider_name" ]; then
       color_error "Provider name cannot be empty. Please try again."
       exit 1
@@ -734,7 +756,7 @@ cmd_add_provider() {
   fi
   
   if [ -z "$base_url" ]; then
-    read -p "Enter base URL for $provider_name: " base_url
+    safe_read base_url "Enter base URL for $provider_name: "
     if [ -z "$base_url" ]; then
       color_error "Base URL cannot be empty. Please try again."
       exit 1
@@ -742,8 +764,7 @@ cmd_add_provider() {
   fi
   
   if [ -z "$api_key" ]; then
-    echo -n "Enter API key for $provider_name: "
-    read -s api_key
+    safe_read api_key "Enter API key for $provider_name: " "-s"
     echo  # Add newline after hidden input
   fi
   
@@ -757,7 +778,7 @@ cmd_switch() {
   # Verify Claude Code is installed before proceeding
   if ! check_claude_code; then
     echo "Claude Code is not installed. Would you like to install it now? (y/n)"
-    read -r response
+    safe_read response ""
     case "$response" in
       [Yy]*)
         cmd_install
@@ -771,7 +792,7 @@ cmd_switch() {
   fi
   
   if [ -z "$provider_name" ]; then
-    read -p "Enter provider name to switch to: " provider_name
+    safe_read provider_name "Enter provider name to switch to: "
     if [ -z "$provider_name" ]; then
       color_error "Provider name cannot be empty. Please try again."
       exit 1
