@@ -4,7 +4,7 @@
 
 > 让 Claude Code 拥抱更广阔的模型世界
 
-Claude Code Sugar 是一个轻量级的本地代理工具，它允许 Claude Code 与任何兼容 OpenAI API 规范的服务进行交互，例如国内开发者常用的**魔搭社区（ModelScope）**平台。
+Claude Code Sugar 是一个轻量级的本地代理工具，它允许 Claude Code 与任何兼容 OpenAI API 规范的服务进行交互，例如国内开发者常用的 **魔搭社区（ModelScope）** 平台。
 
 通过本工具，您可以将 `claude` 命令的请求无缝对接到指定的模型服务上，从而在不改变使用习惯的同时，利用更广泛、更经济或更符合特定需求的模型生态。
 
