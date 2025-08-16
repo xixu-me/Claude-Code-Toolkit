@@ -9,6 +9,10 @@
 
 一个功能全面的跨平台工具包，用于管理 Claude Code 的安装、配置以及对多个 Anthropic 兼容 API 提供商的支持。该工具包简化了设置和切换不同 Anthropic 兼容 API 提供商的过程，包括官方 Anthropic API 和实现了 Anthropic API 规范的兼容第三方服务，例如 **月之暗面（Moonshot AI）最新的 Kimi 模型（`kimi-k2-0711-preview`）**。
 
+## 🍬 Claude Code Sugar
+
+寻求更广泛的模型兼容性？请查看 **[Claude Code Sugar](sugar/)** - 一个轻量级的本地代理工具，它允许 Claude Code 与任何兼容 OpenAI API 规范的服务进行交互，例如魔搭社区（ModelScope）平台。通过 Sugar，您可以将 `claude` 命令请求无缝对接到更广阔的 AI 模型生态系统，同时保持现有的工作流程不变。
+
 > 📖 **关于链接优化**: 为提升用户访问体验，本文提供了通过 **[Xget](https://github.com/xixu-me/Xget)** 优化的 GitHub 链接选项。Xget 是基于 Cloudflare Workers 构建的开源服务，用于改善 GitHub、GitLab 和 Hugging Face 等开源平台的连接稳定性，提供智能缓存（30 分钟 TTL）、HTTP/3 支持、自动重试机制以及安全防护功能。用户可根据自身网络环境选择使用。
 
 ## ✨ 最新 Kimi 模型支持

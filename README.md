@@ -9,6 +9,10 @@
 
 A comprehensive cross-platform toolkit for managing Claude Code installation, configuration, and multiple Anthropic-compatible API provider support. This toolkit simplifies the process of setting up and switching between different Anthropic-compatible API providers, including the official Anthropic API and compatible third-party services like **Moonshot AI with the latest Kimi model (`kimi-k2-0711-preview`)** that implement Anthropic's API specification.
 
+## 🍬 Claude Code Sugar
+
+Looking for broader model compatibility? Check out **[Claude Code Sugar](sugar/)** - a lightweight local proxy tool that allows Claude Code to interact with any service compatible with the OpenAI API specification, such as ModelScope platform. With Sugar, you can seamlessly redirect `claude` command requests to a wider ecosystem of AI models while keeping your existing workflow unchanged.
+
 ## ✨ Latest Kimi Model Support
 
 🚀 **Featured**: This toolkit includes built-in support for **Moonshot AI's latest Kimi model (`kimi-k2-0711-preview`)**, allowing you to leverage cutting-edge AI capabilities through the familiar Claude Code interface.
