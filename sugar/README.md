@@ -1,6 +1,6 @@
 # Claude Code Sugar
 
-[汉语](./README.zh.md)
+***[汉语](./README.zh.md)***
 
 > Bringing Claude Code to the broader world of AI models
 

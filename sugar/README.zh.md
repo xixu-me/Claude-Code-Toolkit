@@ -1,6 +1,6 @@
 # Claude Code Sugar
 
-[English](./README.md)
+***[English](./README.md)***
 
 > 让 Claude Code 拥抱更广阔的模型世界
 
