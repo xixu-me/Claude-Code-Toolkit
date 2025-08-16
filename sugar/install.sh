@@ -5,7 +5,7 @@
 #
 # Description:
 #   This script automatically installs Claude Code Sugar, a proxy tool for accessing
-#   AI models through ModelScope API. It handles Node.js installation, package 
+#   AI models through ModelScope's API-Inference. It handles Node.js installation, package 
 #   installation, and configuration setup.
 #
 # Usage:
@@ -24,10 +24,10 @@
 # This script will:
 #   1. Install Node.js (v18+) via nvm if not present
 #   2. Install claude-code-sugar package globally
-#   3. Configure ModelScope API integration
+#   3. Configure ModelScope's API-Inference integration
 #   4. Set up PATH environment variables
 #
-# For more information: https://github.com/xixu-me/claude-code-sugar
+# For more information: https://github.com/xixu-me/Claude-Code-Toolkit/tree/main/sugar
 #
 
 set -e  # Exit on any error
@@ -198,7 +198,7 @@ node --eval '
 # ============================================================================
 
 echo ""
-echo "🔑 ModelScope API Configuration"
+echo "🔑 ModelScope's API-Inference Configuration"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "Please enter your ModelScope token:"
 echo "📍 Get your token from: $MODELSCOPE_TOKEN_URL"
