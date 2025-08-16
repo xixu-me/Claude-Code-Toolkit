@@ -258,7 +258,6 @@ $proxyConfig = @{
     baseURL      = $MODELSCOPE_API_URL
     apiKey       = $apiKeyPlain
     modelMapping = $DEFAULT_MODEL_MAPPINGS
-    searchApiKey = $apiKeyPlain
 }
 
 $proxyConfig | ConvertTo-Json -Depth 10 | Set-Content $proxyConfigFile -Encoding UTF8

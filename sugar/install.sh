@@ -235,8 +235,7 @@ cat > "$proxy_config_file" << EOF
     "claude-3-5-haiku-20241022": "Qwen/Qwen3-Coder-480B-A35B-Instruct",
     "claude-sonnet-4-20250514": "Qwen/Qwen3-Coder-480B-A35B-Instruct",
     "claude-opus-4-20250514": "Qwen/Qwen3-Coder-480B-A35B-Instruct"
-  },
-  "searchApiKey": "$api_key"
+  }
 }
 EOF
 
